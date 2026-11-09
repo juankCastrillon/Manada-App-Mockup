@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manada App - Ecosistema Unificado Valle de Aburrá</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1A2B4C;
+            --coral: #FF6B52;
+            --coral-hover: #e85a42;
+            --bg-light: #F8F9FC;
+            --white: #FFFFFF;
+            --gray-text: #64748B;
+            --border-color: #E2E8F0;
+            --shadow: 0 10px 25px -5px rgba(26, 43, 76, 0.08), 0 8px 10px -6px rgba(26, 43, 76, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1d36 0%, #1A2B4C 100%);
+            color: var(--primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .presentation-container {
+            width: 100%;
+            max-width: 440px;
+            height: 880px;
+            background: var(--bg-light);
+            border-radius: 44px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 8px solid #2A3F6C;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: var(--white);
+            height: 38px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .status-bar .icons i {
+            margin-left: 6px;
+        }
+
+        /* App Header */
+        .app-header {
+            background: var(--white);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            z-index: 90;
+        }
+
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-brand img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--coral);
+        }
+
+        .app-brand h1 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--coral);
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--coral);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 800;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--white);
+        }
+
+        /* Viewport */
+        .app-viewport {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            background: var(--bg-light);
+            scroll-behavior: smooth;
+            padding-bottom: 20px;
+        }
+
+        .app-viewport::-webkit-scrollbar {
+            width: 4px;
+        }
+        .app-viewport::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .view-section {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            background: var(--white);
+            height: 72px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+            z-index: 100;
+            padding: 0 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: var(--gray-text);
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            padding: 6px 0;
+        }
+
+        .nav-item i {
+            font-size: 15px;
+            margin-bottom: 3px;
+            transition: transform 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--coral);
+        }
+
+        .nav-item.active i {
+            transform: translateY(-2px);
+        }
+
+        /* Common Elements */
+        .search-box {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            font-size: 13px;
+            color: var(--primary);
+            outline: none;
+            box-shadow: var(--shadow);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-text);
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--coral);
+        }
+
+        .banner-promo {
+            background: linear-gradient(135deg, var(--primary) 0%, #2A3F6C 100%);
+            border-radius: 20px;
+            padding: 20px;
+            color: var(--white);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .banner-promo h2 {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .banner-promo p {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .btn-coral {
+            background: var(--coral);
+            color: var(--white);
+            border: none;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-coral:hover {
+            background: var(--coral-hover);
+        }
+
+        /* Grid for items */
+        .grid-15 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .item-card {
+            background: var(--white);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .item-img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .item-body {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+        }
+
+        .item-brand {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--coral);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .item-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .item-price {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* Mapa estilizado como boceto de Medellín */
+        #medellin-map-container {
+            width: 100%;
+            height: 420px;
+            background: #e9ecef;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
+            border: 2px solid var(--border-color);
+        }
+
+        .medellin-map-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(1.2) contrast(1.1);
+        }
+
+        .map-pin-med {
+            position: absolute;
+            background: var(--coral);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            cursor: pointer;
+            border: 2px solid white;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s;
+        }
+
+        .map-pin-med:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .map-pin-med.green { background: #10b981; }
+        .map-pin-med.blue { background: #3b82f6; }
+        .map-pin-med.purple { background: #8b5cf6; }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 43, 76, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: var(--white);
+            width: 100%;
+            max-height: 85%;
+            border-radius: 24px 24px 0 0;
+            padding: 20px;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .modal-close {
+            background: #f1f5f9;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--primary);
+        }
+
+        .tag-pill {
+            display: inline-block;
+            background: #e2e8f0;
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="presentation-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span>9:41</span>
+            <div class="icons">
+                <i class="fa-solid fa-signal"></i>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
+
+        <!-- App Header -->
+        <header class="app-header">
+            <div class="app-brand">
+                <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=150&q=80" alt="Manada Logo">
+                <h1>Manada App</h1>
+            </div>
+            <div class="header-actions">
+                <div class="icon-btn" onclick="openCartModal()" title="Carrito de Compras (5 ítems)">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cartCount">5</span>
+                </div>
+                <div class="icon-btn" onclick="switchTab('profile')" title="Perfil de Mascotas">
+                    <i class="fa-solid fa-paw"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- App Viewport -->
+        <div class="app-viewport">
+
+            <!-- 1. INICIO -->
+            <section id="tab-home" class="view-section active">
+                <div class="banner-promo">
+                    <h2>Ecosistema Unificado Manada 🐾</h2>
+                    <p>Valle de Aburrá • Alimentos Tierragro & Laika, Seguros SURA y Servicios Express</p>
+                    <button class="btn-coral" onclick="showModal('promoModal')">Ver Bonos Activos ($15.000 COP)</button>
+                </div>
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar cuido Pro Plan, veterinaria, juguetes...">
+                </div>
+
+                <div class="section-title">
+                    <span>Aliados Estratégicos & Categorías</span>
+                </div>
+
+                <div class="grid-15">
+                    <div class="item-card" onclick="switchTab('products')">
+                        <img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&w=300&q=80" alt="Productos" class="item-img">
+                        <div class="item-body">
+                            <div>
+                                <span class="item-brand">Tierragro & Laika</span>
+                                <h4 class="item-name">15+ Productos Top</h4>
+                            </div>
+                            <span class="item-price">Ver Catálogo</span>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="switchTab('services')">
+                        <img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=300&q=80" alt="Servicios" class="item-img">
+                        <div class="item-body">
+                            <div>
+                                <span class="item-brand">Especializados</span>
+                                <h4 class="item-name">15+ Servicios Vet</h4>
+                            </div>
+                            <span class="item-price">Agendar Express</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <span>Aliados Destacados con Referencias</span>
+                </div>
+                <div class="card" onclick="showModal('serviceRefModal', 'Clínica Veterinaria Sur', 'Cra. 43A #30S - Envigado', '4.9 ★ (124 opiniones)', 'Abierto 24/7 con urgencias, hospitalización y tarifa preferencial para miembros Manada.')">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=120&q=80" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover;" alt="Vet">
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 13px; font-weight: 700;">Clínica Veterinaria Sur</h4>
+                            <p style="font-size: 11px; color: var(--gray-text);">Envigado • Urgencias 24h</p>
+                        </div>
+                        <span style="color: #f59e0b; font-weight: 700; font-size: 12px;"><i class="fa-solid fa-star"></i> 4.9</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. PRODUCTOS (15 PRODUCTOS DIFERENTES, FOTOS REALES DE ALIMENTOS Y ACCESORIOS ANIMALES) -->
+            <section id="tab-products" class="view-section">
+                <div class="section-title">
+                    <span>Catálogo de Productos (15 ítems)</span>
+                    <span style="font-size: 10px; color: var(--coral); font-weight: 700;">Tierragro & Laika</span>
+                </div>
+                <div class="search-box">
+                    <i class="fa-solid fa-bone"></i>
+                    <input type="text" placeholder="Buscar cuidos, juguetes, accesorios...">
+                </div>
+
+                <div class="grid-15">
+                    <!-- 1 -->
+                    <div class="item-card" onclick="addToCart('Pro Plan Adulto Raza Mediana 15kg', 185000, 'Tierragro')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSosLz14JweCd_J7OfZ_egDeETM7m0a-0_7NrCt66KmPg&s=10" class="item-img" alt="Bolsa de Cuido">
+                        <div class="item-body"><div><span class="item-brand">Tierragro</span><h4 class="item-name">Pro Plan Adulto 15kg</h4></div><span class="item-price">$185.000</span></div>
+                    </div>
+                    <!-- 2 -->
+                    <div class="item-card" onclick="addToCart('Kong Dental Extreme L', 42000, 'Laika')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS39XWSFHexMyTcCHlrduEIxLupc0UFCAHtO0K_CMGBeQ&s" class="item-img" alt="Juguete Kong Perro">
+                        <div class="item-body"><div><span class="item-brand">Laika Pets</span><h4 class="item-name">Kong Dental Extreme</h4></div><span class="item-price">$42.000</span></div>
+                    </div>
+                    <!-- 3 -->
+                    <div class="item-card" onclick="addToCart('Cama Ortopédica Memory Foam', 120000, 'Tierragro')">
+                        <img src="https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?auto=format&fit=crop&w=300&q=80" class="item-img" alt="Cama para Mascota">
+                        <div class="item-body"><div><span class="item-brand">Tierragro</span><h4 class="item-name">Cama Ortopédica L</h4></div><span class="item-price">$120.000</span></div>
+                    </div>
+                    <!-- 4 -->
+                    <div class="item-card" onclick="addToCart('Dispensador Interactivo Treat', 35000, 'Laika')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlaUMssgeGtV3ec1BOZfzsaxqBkMrVoyG-Cc6v3B_P1g&s=10" class="item-img" alt="Juguete Interactivo Gato">
+                        <div class="item-body"><div><span class="item-brand">Laika Pets</span><h4 class="item-name">Dispensador Interactivo</h4></div><span class="item-price">$35.000</span></div>
+                    </div>
+                    <!-- 5 -->
+                    <div class="item-card" onclick="addToCart('Royal Canin Gato Adulto 10kg', 198000, 'Tierragro')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWi6gYcJ9XHNCKVObFnlqhO1lJWSdutLwcqXIvOQZNvg&s=10" class="item-img" alt="Alimento Gato Royal Canin">
+                        <div class="item-body"><div><span class="item-brand">Tierragro</span><h4 class="item-name">Royal Canin Gato 10kg</h4></div><span class="item-price">$198.000</span></div>
+                    </div>
+                    <!-- 6 -->
+                    <div class="item-card" onclick="addToCart('Snacks Naturales Pollo 300g', 24000, 'Laika')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI2F6gUqfH55-LfPUT--mv7TDd_GrpmSRP2d743N-lMg&s" class="item-img" alt="Snacks Naturales">
+                        <div class="item-body"><div><span class="item-brand">Laika Pets</span><h4 class="item-name">Snacks Pollo Natural</h4></div><span class="item-price">$24.000</span></div>
+                    </div>
+                    <!-- 7 -->
+                    <div class="item-card" onclick="addToCart('Antiparasitario Simparica Perros', 75000, 'Tierragro')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2LJBwL_dG-h1dkyyYXbohQKMLqwU3l_HqP0QK3nDCVA&s=10" class="item-img" alt="Medicina Veterinaria">
+                        <div class="item-body"><div><span class="item-brand">Tierragro</span><h4 class="item-name">Simparica Tabletas</h4></div><span class="item-price">$75.000</span></div>
+                    </div>
+                    <!-- 8 -->
+                    <div class="item-card" onclick="addToCart('Arnés Antitirones Reflectivo', 55000, 'Laika')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX53lojN6rFDrMZ6TnIbRrkPHRX6u8Ajkb49l6sr9GDw&s=10" class="item-img" alt="Perro con Arnés">
+                        <div class="item-body"><div><span class="item-brand">Laika Pets</span><h4 class="item-name">Arnés Antitirones</h4></div><span class="item-price">$55.000</span></div>
+                    </div>
+                    <!-- 9 -->
+                    <div class="item-card" onclick="addToCart('Shampoo Hipoalergénico Avena', 38000, 'Tierragro')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFsvhZCy_9oT2GBWFAogIJ1UeYHLWi-DUS6vufjeD1Rw&s=10" class="item-img" alt="Baño y Grooming Mascota">
+                        <div class="item-body"><div><span class="item-brand">Tierragro</span><h4 class="item-name">Shampoo Avena 500ml</h4></div><span class="item-price">$38.000</span></div>
+                    </div>
+                    <!-- 10 -->
+                    <div class="item-card" onclick="addToCart('Rascador para Gatos Multitier', 145000, 'Laika')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGIqO5-g-59QX6kaZtnMaYu1HGRFZZZYBmxUj5HEGRag&s" class="item-img" alt="Gato en Rascador">
+                        <div class="item-body"><div><span class="item-brand">Laika Pets</span><h4 class="item-name">Rascador Torre Gatos</h4></div><span class="item-price">$145.000</span></div>
+                    </div>
+                    <!-- 11 -->
+                    <div class="item-card" onclick="addToCart('Agility Gold Salmón 10kg', 165000, 'Tierragro')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvEqzlxXoBwTE25A88MF77HnolXvov7CMBqHsqedI5QA&s=10" class="item-img" alt="Gato comiendo alimento">
+                        <div class="item-body"><div><span class="item-brand">Tierragro</span><h4 class="item-name">Agility Gold Salmón</h4></div><span class="item-price">$165.000</span></div>
+                    </div>
+                    <!-- 12 -->
+                    <div class="item-card" onclick="addToCart('Colas de Pavo Deshidratadas', 29000, 'Laika')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBWrWZOCD_7NOcLAHfdv9zMiIT4nGtrisc5O8C_U3EGg&s" class="item-img" alt="Perro feliz snack">
+                        <div class="item-body"><div><span class="item-brand">Laika Pets</span><h4 class="item-name">Snack Natural Pavo</h4></div><span class="item-price">$29.000</span></div>
+                    </div>
+                    <!-- 13 -->
+                    <div class="item-card" onclick="addToCart('Bozal de Cesta Seguro', 32000, 'Tierragro')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyTlgWc4Y0kXrTsuEQTRCgteozs-3_iiigZn-HavzMTA&s" class="item-img" alt="Perro con Bozal Cesta">
+                        <div class="item-body"><div><span class="item-brand">Tierragro</span><h4 class="item-name">Bozal Cesta Seguro</h4></div><span class="item-price">$32.000</span></div>
+                    </div>
+                    <!-- 14 -->
+                    <div class="item-card" onclick="addToCart('Fuente de Agua Automática Gatos', 95000, 'Laika')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRF1v9tVTGAKxgxUEuMPITXd99T4hnWT93a10T_LzT65g&s=10" class="item-img" alt="Gato bebiendo agua">
+                        <div class="item-body"><div><span class="item-brand">Laika Pets</span><h4 class="item-name">Fuente Agua 2.5L</h4></div><span class="item-price">$95.000</span></div>
+                    </div>
+                    <!-- 15 -->
+                    <div class="item-card" onclick="addToCart('Hueso Press 100% Natural', 18000, 'Tierragro')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwVh5HEcFbhSV6XlyvxBrIXOEXKvWBnj-Hjf7TBwoq5g&s=10" class="item-img" alt="Perro mordiendo hueso">
+                        <div class="item-body"><div><span class="item-brand">Tierragro</span><h4 class="item-name">Hueso Prensa Grande</h4></div><span class="item-price">$18.000</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. SERVICIOS (15 SERVICIOS, FOTOS ACORDES Y NO REPETIDAS) -->
+            <section id="tab-services" class="view-section">
+                <div class="section-title">
+                    <span>Servicios Especializados (15 ítems)</span>
+                    <span style="font-size: 10px; color: var(--coral); font-weight: 700;">Valle de Aburrá</span>
+                </div>
+
+                <div class="grid-15">
+                    <!-- 1 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Consulta Veterinaria Domiciliaria', 'Dr. Andrés Giraldo (4.9 ★)', '$65.000 COP • Chequeo general en casa.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqUMSD9VUvOjSA-6EBPngXEVYWhov3vp_fYx_E31nFPQ&s=10" class="item-img" alt="Veterinario examinando perro">
+                        <div class="item-body"><div><span class="item-brand">Dr. Giraldo</span><h4 class="item-name">Consulta Vet Domicilio</h4></div><span class="item-price">$65.000</span></div>
+                    </div>
+                    <!-- 2 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Paseador Canino Pro (GPS en vivo)', 'Carlos Ruiz (4.8 ★)', '$35.000 COP • Recorrido 1 hora.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4Vg9MB5EtaMdF2AfC6MrVHLe25wJlYyXcneri30_OdQ&s=10" class="item-img" alt="Paseador con perros en parque">
+                        <div class="item-body"><div><span class="item-brand">Paseos Seguros</span><h4 class="item-name">Paseador Canino GPS</h4></div><span class="item-price">$35.000</span></div>
+                    </div>
+                    <!-- 3 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Spa & Peluquería Canina', 'Patitas Felices (4.9 ★)', '$50.000 COP • Baño y corte de pelo.')">
+                        <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=300&q=80" class="item-img" alt="Perrito en spa de baño">
+                        <div class="item-body"><div><span class="item-brand">Estética</span><h4 class="item-name">Spa & Grooming Completo</h4></div><span class="item-price">$50.000</span></div>
+                    </div>
+                    <!-- 4 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Guardería Canina Día Campestre', 'Hotel Pet Camp (4.9 ★)', '$45.000 COP • Cuidado diurno con zonas verdes.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-K2YdIQH_FLlF1DIg-XqFbKIoDSPmMx1WlJlNZgzXuw&s=10" class="item-img" alt="Perros jugando en guardería">
+                        <div class="item-body"><div><span class="item-brand">Hotel Canino</span><h4 class="item-name">Guardería Día Campestre</h4></div><span class="item-price">$45.000</span></div>
+                    </div>
+                    <!-- 5 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Vacunación Antirrábica y Triple', 'Clínica Vet Sur (4.9 ★)', '$55.000 COP • Aplicación con certificado.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQDruOIxJEzT7qoTg1Wz6anF_1CaZl6jRPLFfZNi5wKQ&s=10" class="item-img" alt="Vacunación clínica veterinaria">
+                        <div class="item-body"><div><span class="item-brand">Salud Preventiva</span><h4 class="item-name">Esquema de Vacunación</h4></div><span class="item-price">$55.000</span></div>
+                    </div>
+                    <!-- 6 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Adiestramiento Canino Positivo', 'Juan Diego Trainer (5.0 ★)', '$70.000 COP • Sesión de obediencia básica.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpnjnPCTyOotalZSOfehA8pzeBLR-Hgv01PW93Irp-3w&s=10" class="item-img" alt="Adiestramiento canino obediencia">
+                        <div class="item-body"><div><span class="item-brand">Comportamiento</span><h4 class="item-name">Adiestramiento Positivo</h4></div><span class="item-price">$70.000</span></div>
+                    </div>
+                    <!-- 7 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Exámenes de Laboratorio en Casa', 'BioVet Lab (4.8 ★)', '$90.000 COP • Toma de muestras a domicilio.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS2Zgb7llXd2prPLCvBkbXER7AOKKemONBTBrpPy47rg&s=10" class="item-img" alt="Exámenes de laboratorio veterinario">
+                        <div class="item-body"><div><span class="item-brand">Laboratorio</span><h4 class="item-name">Hemograma & Perfil Bio</h4></div><span class="item-price">$90.000</span></div>
+                    </div>
+                    <!-- 8 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Limpieza Dental por Ultrasonido', 'Sonrisas de Perro (4.9 ★)', '$120.000 COP • Profilaxis sin anestesia.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMvUaS_B3I-Z4t_xg5tvviZjxM_Km_VniNL9HrtxwsQA&s=10" class="item-img" alt="Higiene dental veterinaria">
+                        <div class="item-body"><div><span class="item-brand">Odontología</span><h4 class="item-name">Profilaxis Dental</h4></div><span class="item-price">$120.000</span></div>
+                    </div>
+                    <!-- 9 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Transporte Pet-Friendly Ejecutivo', 'TaxiPet Aburrá (4.8 ★)', '$30.000 COP • Traslado seguro veterinaria.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTThk2v_m1-a7YoSCdHMC5JKqLzuP741aVafmrHAOh_5A&s=10" class="item-img" alt="Mascota en transporte seguro">
+                        <div class="item-body"><div><span class="item-brand">Movilidad</span><h4 class="item-name">Transporte Pet-Friendly</h4></div><span class="item-price">$30.000</span></div>
+                    </div>
+                    <!-- 10 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Fisioterapia y Rehabilitación', 'RehabPet Medellín (5.0 ★)', '$85.000 COP • Hidroterapia y masajes.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNfJe4KSwEhv0sSgLEL3WkZg1RF_k-zMBIal2x_40PeQ&s=10" class="item-img" alt="Fisioterapia canina hidroterapia">
+                        <div class="item-body"><div><span class="item-brand">Rehabilitación</span><h4 class="item-name">Fisioterapia Canina</h4></div><span class="item-price">$85.000</span></div>
+                    </div>
+                    <!-- 11 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Esterilización Canina / Felina', 'Fundación VetVida (4.9 ★)', '$110.000 COP • Cirugía segura y control.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpNbEQwZhuvYYRXvsyQ6i7HRPN2uREfeITQXo-45EsCQ&s=10" class="item-img" alt="Cirugía veterinaria segura">
+                        <div class="item-body"><div><span class="item-brand">Cirugía</span><h4 class="item-name">Esterilización Segura</h4></div><span class="item-price">$110.000</span></div>
+                    </div>
+                    <!-- 12 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Acupuntura Veterinaria', 'Holistic Pet (4.8 ★)', '$75.000 COP • Manejo de dolor crónico.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1-9rrAu14nt2q2H7o6yiJvBh1GTjeFq5TCSgI5ULepA&s=10" class="item-img" alt="Medicina holística animal">
+                        <div class="item-body"><div><span class="item-brand">Medicina Holística</span><h4 class="item-name">Acupuntura Animal</h4></div><span class="item-price">$75.000</span></div>
+                    </div>
+                    <!-- 13 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Baño en Seco a Domicilio', 'EcoPaws (4.7 ★)', '$28.000 COP • Aseo rápido sin agua.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIxU434nqeXJWFcWvhrbw6wmIkNqRlNdrXHquaU1u35Q&s=10" class="item-img" alt="Aseo rápido gato y perro">
+                        <div class="item-body"><div><span class="item-brand">Aseo Exprés</span><h4 class="item-name">Baño en Seco Exprés</h4></div><span class="item-price">$28.000</span></div>
+                    </div>
+                    <!-- 14 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Sesión de Fotografía Pet', 'FOTO PET MED (4.9 ★)', '$95.000 COP • 10 fotos digitales HD.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW5ZKEc0BliANM1DS4NEmPqKrmVRZniHtcpN0pBzMAMw&s=10" class="item-img" alt="Fotografía profesional de mascotas">
+                        <div class="item-body"><div><span class="item-brand">Entretenimiento</span><h4 class="item-name">Sesión Fotográfica</h4></div><span class="item-price">$95.000</span></div>
+                    </div>
+                    <!-- 15 -->
+                    <div class="item-card" onclick="showModal('serviceModal', 'Hotel Felino Exclusivo', 'Cat Paradise (5.0 ★)', '$50.000 COP • Noche en suite felina.')">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTflEr-hbZZgbENT9not6oQMBYTnO5XV29roqepQasf_g&s=10" class="item-img" alt="Hotel exclusivo para gatos">
+                        <div class="item-body"><div><span class="item-brand">Hotel Gatos</span><h4 class="item-name">Hotel Felino Exclusivo</h4></div><span class="item-price">$50.000</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. MAPA (BOCETO ESTILIZADO DE MEDELLÍN CON 10 SITIOS PET-FRIENDLY Y CAMINOS) -->
+            <section id="tab-map" class="view-section">
+                <div class="section-title">
+                    <span>Mapa de Medellín - 10 Zonas Pet-Friendly 🗺️</span>
+                </div>
+                <div id="medellin-map-container">
+                    <!-- Boceto de mapa urbano estilo Google Maps de Medellín -->
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdM9jnZXjeqkg76QifM2FHyvow3IOEKr-3iyEPHyEtSw&s=10" alt="Boceto Mapa Medellín" class="medellin-map-bg">
+                    
+                    <!-- 10 Pines Diferentes en Medellín y Valle de Aburrá -->
+                    <div class="map-pin-med" style="top: 35%; left: 45%;" onclick="showModal('mapInfoModal', 'Parque de la Presidenta', 'Zona Pet-Friendly Oficial', 'El Poblado, Medellín. Senderos verdes, bebederos automáticos y dispensadores de bolsas gratuitos.')" title="Parque de la Presidenta"><i class="fa-solid fa-tree"></i></div>
+                    
+                    <div class="map-pin-med green" style="top: 50%; left: 55%;" onclick="showModal('mapInfoModal', 'Ciudad del Río', 'Punto Pet-Friendly & Comunidad', 'Medellín sur. Amplia zona verde, ideal para socialización canina y eventos de adopción Manada.')" title="Ciudad del Río"><i class="fa-solid fa-dog"></i></div>
+                    
+                    <div class="map-pin-med blue" style="top: 20%; left: 30%;" onclick="showModal('mapInfoModal', 'Clínica Veterinaria Sur', 'Urgencias 24/7 (Aliado SURA)', 'Envigado. Centro médico especializado con hospitalización y tarifa preferencial Manada.')" title="Clínica Vet Sur"><i class="fa-solid fa-kit-medical"></i></div>
+
+                    <div class="map-pin-med purple" style="top: 65%; left: 40%;" onclick="showModal('mapInfoModal', 'Parque Ambiental Sabaneta', 'Zona Recreativa Canina', 'Sabaneta. Espacio natural rodeado de árboles y zonas aptas para caminatas largas con tu perro.')" title="Parque Sabaneta"><i class="fa-solid fa-paw"></i></div>
+
+                    <div class="map-pin-med" style="top: 45%; left: 30%;" onclick="showModal('mapInfoModal', 'Mall Interplaza', 'Centro Comercial Pet-Friendly', 'Loma de los Balsos. Locales comerciales con acceso libre para mascotas y restaurantes con menú canino.')" title="Mall Interplaza"><i class="fa-solid fa-store"></i></div>
+
+                    <div class="map-pin-med green" style="top: 28%; left: 65%;" onclick="showModal('mapInfoModal', 'Parque Lineal La Presidenta', 'Corredor Verde', 'El Poblado. Ruta arborizada ideal para paseos matutinos con monitoreo GPS.')" title="Parque Lineal"><i class="fa-solid fa-route"></i></div>
+
+                    <div class="map-pin-med blue" style="top: 75%; left: 50%;" onclick="showModal('mapInfoModal', 'Hospital Veterinario Itagüí', 'Atención Especializada', 'Itagüí. Urgencias 24 horas, cirugía general y laboratorio clínico aliado.')" title="Vet Itagüí"><i class="fa-solid fa-hospital"></i></div>
+
+                    <div class="map-pin-med purple" style="top: 15%; left: 50%;" onclick="showModal('mapInfoModal', 'Jardín Botánico de Medellín', 'Zona de Pícnic Pet-Friendly', 'Medellín norte. Espacios abiertos para caminatas supervisadas bajo normativa de tenencia.')" title="Jardín Botánico"><i class="fa-solid fa-leaf"></i></div>
+
+                    <div class="map-pin-med" style="top: 58%; left: 70%;" onclick="showModal('mapInfoModal', 'Parque Biblioteca España', 'Mirador y Senderos', 'Santo Domingo. Rutas ecológicas con vistas panorámicas del Valle de Aburrá.')" title="Biblioteca España"><i class="fa-solid fa-mountain"></i></div>
+
+                    <div class="map-pin-med green" style="top: 40%; left: 20%;" onclick="showModal('mapInfoModal', 'Cerro Nutibara (Pueblito Paisa)', 'Mirador Turístico Canino', 'Medellín centro-occidente. Senderos adoquinados y miradores aptos para ejercicio canino.')" title="Cerro Nutibara"><i class="fa-solid fa-binoculars"></i></div>
+                </div>
+                <div class="card" style="padding: 12px; background: #fff;">
+                    <h4 style="font-size: 13px; font-weight: 700;"><i class="fa-solid fa-route" style="color: var(--coral);"></i> Ruta Optimizada Valle de Aburrá</h4>
+                    <p style="font-size: 11px; color: var(--gray-text); margin-top: 2px;">Cálculo de tráfico en tiempo real y guía de caminos y rutas pet-friendly en Medellín, Envigado y Sabaneta.</p>
+                </div>
+            </section>
+
+            <!-- 5. LEYES Y ASESORÍAS (SURA Y MÁS) -->
+            <section id="tab-legal" class="view-section">
+                <div class="section-title">
+                    <span>Asesorías Legales & Seguros (SURA)</span>
+                </div>
+
+                <div class="card" onclick="showModal('legalModal', 'Seguro de Mascotas SURA (Aliado Oficial)', 'Póliza de Salud y Responsabilidad Civil', 'Protege a tu peludo ante accidentes, enfermedades graves, responsabilidad civil extracontractual por daños a terceros y asistencia veterinaria 24/7 en todo el Valle de Aburrá.')">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=120&q=80" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover;" alt="Seguro SURA">
+                        <div>
+                            <h4 style="font-size: 13px; font-weight: 700; color: var(--primary);">Seguro para Mascotas SURA</h4>
+                            <p style="font-size: 11px; color: var(--gray-text);">Asistencia integral y póliza RC</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" onclick="showModal('legalModal', 'Ley 1774 de 2016 (Protección Animal)', 'Tipificación de delitos en Colombia', 'Establece que los animales son seres sintientes, no cosas, y castiga severamente el maltrato, abandono y crueldad animal con multas e incluso pena de cárcel.')">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=120&q=80" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover;" alt="Ley Protección Animal">
+                        <div>
+                            <h4 style="font-size: 13px; font-weight: 700; color: var(--primary);">Ley 1774 de 2016 - Protección Animal</h4>
+                            <p style="font-size: 11px; color: var(--gray-text);">Derechos y sanciones penales</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" onclick="showModal('legalModal', 'Régimen de Propiedad Horizontal (Ley 675)', 'Mascotas en Copropiedades', 'Regula la libre circulación en zonas comunes, uso obligatorio de traílla y bozal para razas de manejo especial, y prohíbe multas o prohibiciones arbitrarias en edificios.')">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover;" alt="Propiedad Horizontal">
+                        <div>
+                            <h4 style="font-size: 13px; font-weight: 700; color: var(--primary);">Mascotas en Propiedad Horizontal</h4>
+                            <p style="font-size: 11px; color: var(--gray-text);">Guía jurídica en edificios y conjuntos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" onclick="showModal('legalModal', 'Asesoría Jurídica Especializada Manada', 'Consulta con Abogados Expertos', 'Servicio de consultoría legal 24/7 para tutores en casos de tenencia responsable, seguros, conflictos vecinales y normativas de transporte público.')">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover;" alt="Asesoría Jurídica">
+                        <div>
+                            <h4 style="font-size: 13px; font-weight: 700; color: var(--primary);">Asesoría Jurídica Personalizada</h4>
+                            <p style="font-size: 11px; color: var(--gray-text);">Atención prioritaria en la app</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. COMUNIDAD -->
+            <section id="tab-community" class="view-section">
+                <div class="section-title">
+                    <span>Comunidad & Cuidado Animal 🐾</span>
+                    <button class="btn-coral" style="padding: 4px 10px; font-size: 10px; width: auto;" onclick="showModal('newPostModal')"><i class="fa-solid fa-plus"></i> Publicar</button>
+                </div>
+
+                <div class="post-card card">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;" alt="User">
+                        <div>
+                            <h4 style="font-size: 13px; font-weight: 700;">Camila & "Luna" 🐕</h4>
+                            <span style="font-size: 10px; color: var(--gray-text);">Hace 2 horas • El Poblado</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--primary); margin-bottom: 8px; line-height: 1.4;">¡Increíble el servicio de paseadores! Luna quedó super feliz después de su recorrido por Parques del Río. Recomendamos a Mandada al 100%.</p>
+                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=500&q=80" style="width: 100%; height: 150px; border-radius: 10px; object-fit: cover; margin-bottom: 8px;" alt="Post">
+                    <div style="display: flex; gap: 16px; font-size: 11px; color: var(--gray-text);">
+                        <span><i class="fa-regular fa-heart" style="color: var(--coral);"></i> 42 Me gusta</span>
+                        <span><i class="fa-regular fa-comment"></i> 8 comentarios</span>
+                    </div>
+                </div>
+
+                <div class="post-card card">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;" alt="User">
+                        <div>
+                            <h4 style="font-size: 13px; font-weight: 700;">Mateo & "Rocky" 🐈</h4>
+                            <span style="font-size: 10px; color: var(--gray-text);">Hace 5 horas • Sabaneta</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--primary); margin-bottom: 8px; line-height: 1.4;">¿Consejos para el cuidado dental en gatos senior? Mi peludo cumple 10 años y quiero prevenir acumulación de sarro.</p>
+                    <div style="display: flex; gap: 16px; font-size: 11px; color: var(--gray-text);">
+                        <span><i class="fa-regular fa-heart" style="color: var(--coral);"></i> 19 Me gusta</span>
+                        <span><i class="fa-regular fa-comment"></i> 12 respuestas</span>
+                    </div>
+                </div>
+
+                <div class="post-card card">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=150&q=80" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;" alt="User">
+                        <div>
+                            <h4 style="font-size: 13px; font-weight: 700;">Valeria & "Toby" 🐾</h4>
+                            <span style="font-size: 10px; color: var(--gray-text);">Hace 1 día • Envigado</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--primary); margin-bottom: 8px; line-height: 1.4;">Excelente atención en la Clínica Veterinaria Sur. Usé mi descuento de membresía Manada y la atención de urgencias fue inmediata.</p>
+                    <div style="display: flex; gap: 16px; font-size: 11px; color: var(--gray-text);">
+                        <span><i class="fa-regular fa-heart" style="color: var(--coral);"></i> 31 Me gusta</span>
+                        <span><i class="fa-regular fa-comment"></i> 4 comentarios</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. PERFIL COMPLETO DE MASCOTA Y DUEÑO -->
+            <section id="tab-profile" class="view-section">
+                <div class="card" style="text-align: center; padding: 20px;">
+                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=200&q=80" alt="Kira" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--coral); margin: 0 auto 10px auto;">
+                    <h3 style="font-size: 16px; font-weight: 800; color: var(--primary);">Kira 🐾</h3>
+                    <p style="font-size: 12px; color: var(--gray-text); margin-top: 2px;">Golden Retriever • Hembra • 3 Años</p>
+                    <p style="font-size: 11px; color: var(--gray-text); margin-top: 2px;">Peso: 28 kg • Esterilizada: Sí</p>
+                    <div style="display: flex; justify-content: center; gap: 6px; margin-top: 10px;">
+                        <span class="tag-pill" style="background: #fee2e2; color: #991b1b;">Vacunas al día</span>
+                        <span class="tag-pill" style="background: #dcfce7; color: #166534;">Seguro SURA Activo</span>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <span>Datos del Tutor / Dueño</span>
+                </div>
+                <div class="card">
+                    <h4 style="font-size: 13px; font-weight: 700; color: var(--primary);">Cristina Márquez</h4>
+                    <p style="font-size: 11px; color: var(--gray-text); margin-top: 2px;">Medellín, El Poblado • Estrato 5</p>
+                    <p style="font-size: 11px; color: var(--gray-text);">contacto@manadaapp.co • +57 300 123 4567</p>
+                </div>
+
+                <div class="section-title">
+                    <span>Historial de Pedidos & Reservas</span>
+                </div>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--coral);">#MANADA-8921</span>
+                        <span style="font-size: 10px; background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 8px; font-weight: 600;">Entregado</span>
+                    </div>
+                    <p style="font-size: 12px; font-weight: 600;">Pro Plan Adulto 15kg + Kong Dental</p>
+                    <p style="font-size: 10px; color: var(--gray-text); margin-top: 2px;">Bodega Principal Valle de Aburrá • Envío Express (2h)</p>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="switchTab('home', this)">
+                <i class="fa-solid fa-house"></i>
+                <span>Inicio</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('products', this)">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span>Productos</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('services', this)">
+                <i class="fa-solid fa-stethoscope"></i>
+                <span>Servicios</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('map', this)">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>Mapa</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('legal', this)">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span>Leyes</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('community', this)">
+                <i class="fa-solid fa-users"></i>
+                <span>Comunidad</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('profile', this)">
+                <i class="fa-solid fa-paw"></i>
+                <span>Perfil</span>
+            </button>
+        </nav>
+
+        <!-- Modal Overlay -->
+        <div id="appModal" class="modal-overlay" onclick="closeModal(event)">
+            <div class="modal-card" id="modalContent"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Carrito precargado exactamente con 5 ítems como solicitaste
+        let cart = [
+            { name: "Pro Plan Adulto 15kg", price: 185000, brand: "Tierragro" },
+            { name: "Kong Dental Extreme", price: 42000, brand: "Laika" },
+            { name: "Cama Ortopédica Memory Foam", price: 120000, brand: "Tierragro" },
+            { name: "Snacks Naturales Pollo 300g", price: 24000, brand: "Laika" },
+            { name: "Antiparasitario Simparica Perros", price: 75000, brand: "Tierragro" }
+        ];
+
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            if(btnElement) {
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                btnElement.classList.add('active');
+            } else {
+                const map = { 'home': 0, 'products': 1, 'services': 2, 'map': 3, 'legal': 4, 'community': 5, 'profile': 6 };
+                const idx = map[tabId];
+                if(idx !== undefined) {
+                    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                    document.querySelectorAll('.nav-item')[idx].classList.add('active');
+                }
+            }
+        }
+
+        function addToCart(name, price, brand) {
+            cart.push({ name, price, brand });
+            document.getElementById('cartCount').innerText = cart.length;
+            alert(`¡Agregado al carrito!\n${name} (${brand})\nPrecio: $${price.toLocaleString()} COP`);
+        }
+
+        function openCartModal() {
+            const overlay = document.getElementById('appModal');
+            const content = document.getElementById('modalContent');
+            
+            let total = cart.reduce((sum, item) => sum + item.price, 0);
+            
+            let itemsHtml = cart.map(item => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                    <div>
+                        <h4 style="font-size: 12px; font-weight: 700;">${item.name}</h4>
+                        <span style="font-size: 10px; color: var(--coral); font-weight: 600;">${item.brand}</span>
+                    </div>
+                    <span style="font-size: 12px; font-weight: 800;">$${item.price.toLocaleString()} COP</span>
+                </div>
+            `).join('');
+
+            content.innerHTML = `
+                <div class="modal-header">
+                    <h3 style="font-size: 15px; font-weight: 800; color: var(--primary);">Carrito de Compras (5+ ítems) 🛒</h3>
+                    <button class="modal-close" onclick="closeModalDirect()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div style="max-height: 180px; overflow-y: auto; margin-bottom: 12px;">
+                    ${itemsHtml.length ? itemsHtml : '<p style="font-size: 12px; color: var(--gray-text);">Tu carrito está vacío.</p>'}
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 14px; font-weight: 800; font-size: 14px;">
+                    <span>Total a pagar:</span>
+                    <span style="color: var(--coral);">$${total.toLocaleString()} COP</span>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 11px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 4px;">Forma de Pago Segura:</label>
+                    <select style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); font-size: 12px; outline: none; background: #fff;">
+                        <option>💳 Tarjeta Débito / Crédito (Pasarela Segura)</option>
+                        <option>📱 Nequi / Daviplata</option>
+                        <option>💵 Pago contra entrega (Efectivo/Datáfono)</option>
+                    </select>
+                </div>
+                <button class="btn-coral" style="padding: 11px;" onclick="alert('¡Pedido procesado con éxito! Despacho en camino desde nuestra bodega (1-3 horas en el Valle de Aburrá).'); cart=[]; document.getElementById('cartCount').innerText='0'; closeModalDirect();">Confirmar Pedido Express</button>
+            `;
+            overlay.style.display = 'flex';
+        }
+
+        function showModal(modalType, title, subtitle, desc) {
+            const overlay = document.getElementById('appModal');
+            const content = document.getElementById('modalContent');
+            
+            let html = '';
+            if(modalType === 'promoModal') {
+                html = `
+                    <div class="modal-header">
+                        <h3 style="font-size: 15px; font-weight: 800; color: var(--primary);">Promociones Activas 🎁</h3>
+                        <button class="modal-close" onclick="closeModalDirect()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="card" style="background: #fff7ed; border-color: #fdba74; margin-bottom: 8px;">
+                        <h4 style="font-size: 12px; font-weight: 700; color: #c2410c;">Bono Bienvenida $15.000 COP</h4>
+                        <p style="font-size: 11px; color: var(--gray-text); margin-top: 2px;">Usa el código <strong>MANADA15K</strong> en tu primera compra superior a $50.000 COP.</p>
+                    </div>
+                    <div class="card" style="background: #f0fdf4; border-color: #86efac;">
+                        <h4 style="font-size: 12px; font-weight: 700; color: #15803d;">Primer Envío Express Gratis</h4>
+                        <p style="font-size: 11px; color: var(--gray-text); margin-top: 2px;">Recibe entre 1 y 3 horas en todo el Valle de Aburrá sin costo de entrega.</p>
+                    </div>
+                `;
+            } else if(modalType === 'serviceModal' || modalType === 'serviceRefModal') {
+                html = `
+                    <div class="modal-header">
+                        <h3 style="font-size: 15px; font-weight: 800; color: var(--primary);">${title}</h3>
+                        <button class="modal-close" onclick="closeModalDirect()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <p style="font-size: 12px; font-weight: 700; color: var(--coral); margin-bottom: 4px;">${subtitle}</p>
+                    <p style="font-size: 11px; color: var(--gray-text); margin-bottom: 14px; line-height: 1.4;">${desc}</p>
+                    <button class="btn-coral" style="padding: 11px;" onclick="alert('¡Servicio agendado con éxito en Manada App!'); closeModalDirect();">Reservar Servicio Ahora</button>
+                `;
+            } else if(modalType === 'mapInfoModal') {
+                html = `
+                    <div class="modal-header">
+                        <h3 style="font-size: 15px; font-weight: 800; color: var(--primary);"><i class="fa-solid fa-location-dot" style="color: var(--coral);"></i> ${title}</h3>
+                        <button class="modal-close" onclick="closeModalDirect()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <span class="tag-pill">${subtitle}</span>
+                    <p style="font-size: 11px; color: var(--gray-text); margin: 10px 0 14px 0; line-height: 1.4;">${desc}</p>
+                    <button class="btn-coral" style="padding: 10px;" onclick="closeModalDirect()">Cómo llegar (Ruta Optimizada)</button>
+                `;
+            } else if(modalType === 'legalModal') {
+                html = `
+                    <div class="modal-header">
+                        <h3 style="font-size: 15px; font-weight: 800; color: var(--primary);">${title}</h3>
+                        <button class="modal-close" onclick="closeModalDirect()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <span class="tag-pill">${subtitle}</span>
+                    <p style="font-size: 11px; color: var(--gray-text); margin: 10px 0 14px 0; line-height: 1.4;">${desc}</p>
+                    <div style="background: var(--bg-light); padding: 10px; border-radius: 10px; font-size: 11px; color: var(--primary);">
+                        <strong>Asesoría Manada & SURA:</strong> Agenda una consulta gratuita de 15 minutos con nuestros expertos jurídicos en propiedad horizontal y seguros.
+                    </div>
+                `;
+            } else if(modalType === 'newPostModal') {
+                html = `
+                    <div class="modal-header">
+                        <h3 style="font-size: 15px; font-weight: 800; color: var(--primary);">Crear Publicación</h3>
+                        <button class="modal-close" onclick="closeModalDirect()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <textarea placeholder="Comparte una anécdota, recomendación o pregunta con la comunidad..." style="width: 100%; height: 90px; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); font-family: 'Plus Jakarta Sans'; font-size: 12px; resize: none; margin-bottom: 10px; outline: none;"></textarea>
+                    <button class="btn-coral" style="padding: 11px;" onclick="alert('¡Publicación compartida con éxito en la comunidad Manada!'); closeModalDirect();">Publicar</button>
+                `;
+            }
+
+            content.innerHTML = html;
+            overlay.style.display = 'flex';
+        }
+
+        function closeModal(e) {
+            if(e.target.id === 'appModal') {
+                document.getElementById('appModal').style.display = 'none';
+            }
+        }
+
+        function closeModalDirect() {
+            document.getElementById('appModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
